@@ -19,5 +19,6 @@
     "vite": "^5.0.10",
     "vue": "^3.3.10"
   },
-  "type": "module"
+  "type": "module",
+  "packageManager": "yarn@4.3.1"
 }
