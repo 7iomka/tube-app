@@ -1,0 +1,69 @@
+{
+  // Controls how suggestions are pre-selected when showing the suggest list
+  "editor.suggestSelection": "first", // first, none, recentlyUsed
+  "editor.suggest.showWords": false,
+  "editor.wordWrap": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.tabSize": 2, // optional
+  "editor.defaultFormatter": "esbenp.prettier-vscode", // set by default
+  "[typescript]": {
+    // override if setted per-language
+    "editor.defaultFormatter": "esbenp.prettier-vscode" // "rvest.vs-code-prettier-eslint"
+  },
+  "eslint.lintTask.enable": true,
+  "eslint.format.enable": true,
+  "editor.snippetSuggestions": "inline", // top
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.idea": true,
+    "**/.history": true,
+    "**/.history/**": true,
+    "**/.next/**": true,
+    "**/.yarn/**": true
+  },
+  // Fix jest extension issue (if needed)
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact",
+    "typescript": "typescriptreact"
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "[ansible]": {
+    "gitlens.codeLens.scopes": ["document"]
+  },
+  "scss.scannerExclude": [
+    "**/.git",
+    "**/node_modules",
+    "**/.history",
+    "**/build",
+    "**/dist",
+    "**/.next",
+    "**/.turbo"
+  ],
+  // "typescript.tsdk": "ROOT/node_modules/typescript/lib",
+  "editor.gotoLocation.multipleDefinitions": "goto",
+  "terminal.integrated.shellIntegration.enabled": true,
+  "window.commandCenter": true,
+  "editor.linkedEditing": true,
+  "eslint.workingDirectories": [{ "mode": "auto" }],
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "classNames",
+    "stickyClassName",
+    "wrapperClassName"
+  ],
+  "files.associations": {
+    "*.css": "css"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "svg.preview.background": "editor"
+}

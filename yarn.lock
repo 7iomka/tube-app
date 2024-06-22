@@ -601,6 +601,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^20.14.8":
+  version: 20.14.8
+  resolution: "@types/node@npm:20.14.8"
+  dependencies:
+    undici-types: "npm:~5.26.4"
+  checksum: 10c0/06d4643fa3b179b41fe19f9c75c240278ca1f7a313b3b837bc36ea119499c7ad77f06bbe72694ac04aa91ec77fe747baa09b889f4c435450c1724a26bd55f160
+  languageName: node
+  linkType: hard
+
 "@vitejs/plugin-vue@npm:^5.0.0":
   version: 5.0.5
   resolution: "@vitejs/plugin-vue@npm:5.0.5"
@@ -2306,6 +2315,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@types/node": "npm:^20.14.8"
     "@vitejs/plugin-vue": "npm:^5.0.0"
     "@vue/compiler-sfc": "npm:^3.3.10"
     "@vue/server-renderer": "npm:^3.3.10"
@@ -2625,6 +2635,13 @@ __metadata:
     media-typer: "npm:0.3.0"
     mime-types: "npm:~2.1.24"
   checksum: 10c0/a23daeb538591b7efbd61ecf06b6feb2501b683ffdc9a19c74ef5baba362b4347e42f1b4ed81f5882a8c96a3bfff7f93ce3ffaf0cbbc879b532b04c97a55db9d
+  languageName: node
+  linkType: hard
+
+"undici-types@npm:~5.26.4":
+  version: 5.26.5
+  resolution: "undici-types@npm:5.26.5"
+  checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
   languageName: node
   linkType: hard
 

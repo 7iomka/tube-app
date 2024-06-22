@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "target": "ES2020", // not changed to es5
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"], // not changed to ["dom", "es5", "es2015.collection", "es2015.iterable"]
+    "module": "ESNext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler", // not changed to 'nonde'
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+
+    /* Node specific */
+    "allowSyntheticDefaultImports": true,
+
+    /* Linting */
+    "strict": false, // true
+    "noUnusedLocals": false, // true
+    "noUnusedParameters": false, // true
+    "noFallthroughCasesInSwitch": true,
+    "types": ["vite/client"],
+    "checkJs": true,
+    "composite": false,
+    "incremental": true,
+    "inlineSources": false,
+    "preserveWatchOutput": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": false,
+    "downlevelIteration": true,
+    "importHelpers": true,
+    "allowJs": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "pages", "renderer", "server", "*.js", ".cjs", "*.ts"],
+  "exclude": ["**/*.test.ts"]
+}
