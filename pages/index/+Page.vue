@@ -1,12 +1,10 @@
 <template>
   <h1>Welcome</h1>
-  This page is:
-  <ul>
-    <li>Rendered to HTML.</li>
-    <li>Interactive. <Counter /></li>
-  </ul>
+  <TubeApp />
 </template>
 
 <script setup>
-import Counter from './Counter.vue'
+import TubeApp from '@/widgets/tube-app/TubeApp.vue'
 </script>
+
+<style scoped></style>
