@@ -1,15 +1,17 @@
 <template>
-    <div class="tube">
-        <slot />
+    <div class="tube-wrapper">
+        <slot name="header" />
+        <div class="tube">
+            <slot />
+        </div>
+        <slot name="footer" />
     </div>
 </template>
 
 <script setup lang="ts">
 
 export interface TubeProps {
-    color: string;
-    ballGap: string | number;
-    ballSize: string | number;
+    maxCount: number;
 }
 
 
@@ -17,18 +19,56 @@ const props = defineProps<TubeProps>()
 </script>
 
 <style scoped>
-.tube {
-    --color: v-bind('color');
-    --gap: v-bind('ballGap');
-    --ball-size: v-bind('ballSize');
-    --padding: 0.6rem;
+.tube-wrapper {
+    display: grid;
+    place-items: center;
+    align-items: flex-start;
+    gap: 1rem;
+}
 
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
+.tube {
+    --ball-count: v-bind('maxCount');
+    --gap: 0.5rem;
+    --ball-size: 1.5rem;
+    --padding: 0.6rem;
+    --line-color: rgba(0, 0, 0, 0.1);
+    --line-height: 1px;
+
+
+    display: grid;
+    grid-template-rows: repeat(var(--ball-count), var(--ball-size));
     gap: var(--gap);
     padding: var(--padding);
     min-width: calc(var(--ball-size) + var(--padding) * 2);
-    border: 2px solid var(--color);
+    border: var(--border-size) solid var(--color);
+    border-radius: 0.5rem;
+    height: calc(var(--ball-size) * var(--ball-count) + var(--padding) * 2 + var(--gap) * (var(--ball-count) - 1));
+    position: relative;
+    box-shadow: 0 0 0 var(--line-height) var(--line-color),
+        0 calc(var(--padding) / 2) calc(var(--padding) / 3) inset rgba(0, 0, 0, 0.05),
+        0 calc(var(--padding) / -2) calc(var(--padding) / 3) inset rgba(0, 0, 0, 0.05);
+
+}
+
+.tube::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--padding) + var(--ball-size) / 2);
+    left: 0;
+    right: 0;
+    height: calc(100% - var(--padding) * 2 - var(--ball-size));
+    background: repeating-linear-gradient(to bottom,
+            transparent,
+            transparent calc((var(--ball-size) + var(--gap)) / 2 - var(--line-height) / 2),
+            var(--line-color) calc((var(--ball-size) + var(--gap)) / 2 - var(--line-height) / 2),
+            var(--line-color) calc((var(--ball-size) + var(--gap)) / 2 + var(--line-height) / 2),
+            transparent calc((var(--ball-size) + var(--gap)) / 2 + var(--line-height) / 2));
+
+
+    background-size: 100% calc(var(--ball-size) + var(--gap));
+}
+
+.tube>* {
+    grid-row: span 1;
 }
 </style>
