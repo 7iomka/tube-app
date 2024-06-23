@@ -4,7 +4,7 @@
         <div class="tube">
             <slot />
         </div>
-        <slot name="footer" />
+        <!-- <slot name="footer" /> -->
     </div>
 </template>
 
@@ -35,18 +35,18 @@ const props = defineProps<TubeProps>()
     --line-height: 1px;
 
 
-    display: grid;
-    grid-template-rows: repeat(var(--ball-count), var(--ball-size));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     gap: var(--gap);
     padding: var(--padding);
     min-width: calc(var(--ball-size) + var(--padding) * 2);
     border: var(--border-size) solid var(--color);
-    border-radius: 0.5rem;
+    border-radius: 0 0 0.5rem 0.5rem;
     height: calc(var(--ball-size) * var(--ball-count) + var(--padding) * 2 + var(--gap) * (var(--ball-count) - 1));
     position: relative;
     box-shadow: 0 0 0 var(--line-height) var(--line-color),
-        0 calc(var(--padding) / 2) calc(var(--padding) / 3) inset rgba(0, 0, 0, 0.05),
-        0 calc(var(--padding) / -2) calc(var(--padding) / 3) inset rgba(0, 0, 0, 0.05);
+        0 calc(var(--padding) / 2) calc(var(--padding) / 3) inset rgba(0, 0, 0, 0.05);
 
 }
 

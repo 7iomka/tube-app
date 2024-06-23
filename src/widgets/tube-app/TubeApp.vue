@@ -2,27 +2,19 @@
     <div class="tube-app">
 
         <div class="tubes">
-            <Tube :maxCount="tubeSize">
-                <Ball color="red" v-for="i in tubeSize"></Ball>
-                <template #footer>
-                    <Ball color="red"></Ball>
-                </template>
-            </Tube>
-            <Tube :maxCount="tubeSize">
-                <Ball color="green" v-for="i in tubeSize"></Ball>
-            </Tube>
-            <Tube :maxCount="tubeSize">
-                <Ball color="blue" v-for="i in tubeSize"></Ball>
-            </Tube>
-
+            <TubeWithData v-for="idx in tubeIds" :key="idx" :idx="idx" :maxCount="props.tubeSize">
+            </TubeWithData>
         </div>
+
+        <button type="button" @click="handleInit">Start game</button>
     </div>
 
 </template>
 
 <script setup lang="ts">
-import Ball from './ui/Ball.vue'
-import Tube from './ui/Tube.vue'
+import { useUnit } from "effector-vue/composition";
+import TubeWithData from './TubeWithData.vue'
+import { $$tubeApp } from "./tube-app.model";
 
 export interface Props {
     tubeSize?: number
@@ -31,6 +23,9 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
     tubeSize: 6
 })
+
+const handleInit = useUnit($$tubeApp.gameStarted);
+const tubeIds = useUnit($$tubeApp.$tubeIdxList);
 
 </script>
 

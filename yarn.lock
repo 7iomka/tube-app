@@ -1089,6 +1089,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"effector-vue@npm:^23.0.0":
+  version: 23.0.0
+  resolution: "effector-vue@npm:23.0.0"
+  peerDependencies:
+    "@vue/reactivity": ^3.0.2
+    "@vue/runtime-core": ^3.0.2
+    effector: ^23.0.0
+    vue: "*"
+  checksum: 10c0/b4a13e378781719a4497a354bd119965dfda2dcaeb9d0705e6b3370d523707193a71d23fc96f69ef83b1c5eddbb9240ab41756701b8f5fc8c8d3e9152450ea93
+  languageName: node
+  linkType: hard
+
+"effector@npm:^23.2.2":
+  version: 23.2.2
+  resolution: "effector@npm:23.2.2"
+  checksum: 10c0/455878a7a76806ddac2ad2bf76ee62084794a933ad1fece2990dd3de60cad7162b57e069fdea670c57f1f2f7ccbd6e480691f3eb8abe2fa97d8f253a64aa4a49
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^8.0.0":
   version: 8.0.0
   resolution: "emoji-regex@npm:8.0.0"
@@ -2140,6 +2159,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"patronum@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "patronum@npm:2.2.0"
+  peerDependencies:
+    effector: ^23
+  checksum: 10c0/ff75232bbb4b11617ac94d25f4c766f0744683c01279cc32cc618dad93474b030fc81e506c65104736806e297190934ceb83a118b56ff6292f03a5700ea78f2e
+  languageName: node
+  linkType: hard
+
 "picocolors@npm:^1.0.0":
   version: 1.0.1
   resolution: "picocolors@npm:1.0.1"
@@ -2321,8 +2349,11 @@ __metadata:
     "@vue/server-renderer": "npm:^3.3.10"
     compression: "npm:^1.7.4"
     cross-env: "npm:^7.0.3"
+    effector: "npm:^23.2.2"
+    effector-vue: "npm:^23.0.0"
     express: "npm:^4.18.2"
     node-fetch: "npm:^3.3.2"
+    patronum: "npm:^2.2.0"
     sirv: "npm:^2.0.3"
     typescript: "npm:5.4"
     vike: "npm:^0.4.177"
