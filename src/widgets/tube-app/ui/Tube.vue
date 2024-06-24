@@ -1,6 +1,8 @@
 <template>
     <div class="tube-wrapper">
-        <slot name="header" />
+        <div class="header">
+            <slot name="header" />
+        </div>
         <div class="tube">
             <slot />
         </div>
@@ -20,20 +22,27 @@ const props = defineProps<TubeProps>()
 
 <style scoped>
 .tube-wrapper {
-    display: grid;
-    place-items: center;
-    align-items: flex-start;
-    gap: 1rem;
-}
-
-.tube {
     --ball-count: v-bind('maxCount');
     --gap: 0.5rem;
     --ball-size: 1.5rem;
     --padding: 0.6rem;
     --line-color: rgba(0, 0, 0, 0.1);
     --line-height: 1px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    align-items: center;
+    justify-content: flex-end;
+}
 
+.header {
+    padding: var(--padding);
+    padding-bottom: 0;
+    min-width: calc(var(--ball-size) + var(--padding) * 2);
+    min-height: calc(var(--ball-size) + var(--padding) * 2);
+}
+
+.tube {
 
     display: flex;
     flex-direction: column;
@@ -41,7 +50,6 @@ const props = defineProps<TubeProps>()
     gap: var(--gap);
     padding: var(--padding);
     min-width: calc(var(--ball-size) + var(--padding) * 2);
-    border: var(--border-size) solid var(--color);
     border-radius: 0 0 0.5rem 0.5rem;
     height: calc(var(--ball-size) * var(--ball-count) + var(--padding) * 2 + var(--gap) * (var(--ball-count) - 1));
     position: relative;
@@ -66,9 +74,5 @@ const props = defineProps<TubeProps>()
 
 
     background-size: 100% calc(var(--ball-size) + var(--gap));
-}
-
-.tube>* {
-    grid-row: span 1;
 }
 </style>

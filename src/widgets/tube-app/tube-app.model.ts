@@ -7,6 +7,7 @@ import {
 import { availableColors } from './tube-app.constants';
 
 import { debug } from 'patronum/debug';
+import { produce } from 'immer';
 
 const gameStarted = createEvent();
 const gameEnded = createEvent();
@@ -47,6 +48,7 @@ const $tubeIdxList = combine($tubesKv, (tubesKv) =>
   Object.keys(tubesKv).map(Number),
 );
 const tubesInitialized = createEvent<TubesKv>();
+const tubeSelected = createEvent<number>();
 
 const $ballOutside = combine($tubesKv, (tubesKv) => {
   for (const tube of Object.values(tubesKv)) {
@@ -98,4 +100,47 @@ sample({
   target: tubesInitialized,
 });
 
-export const $$tubeApp = { gameStarted, $tubesKv, $ballOutside, $tubeIdxList };
+sample({
+  clock: tubeSelected,
+  source: {
+    tubesKv: $tubesKv,
+    ballOutside: $ballOutside,
+  },
+  fn: ({ tubesKv, ballOutside }, tubeIdx) => {
+    return produce(tubesKv, (draft) => {
+      const tube = draft[tubeIdx];
+      const hasCurrentTubeBallOutside = ballOutside?.tubeIdx === tubeIdx;
+
+      const currentBall = tube.balls.find((ball) => ball.idx === 0);
+      if (currentBall) {
+        currentBall.isOutside = !hasCurrentTubeBallOutside;
+      }
+
+      if (!ballOutside || hasCurrentTubeBallOutside) {
+        return;
+      }
+
+      const outsideTube = draft[ballOutside.tubeIdx];
+      const outsideBall = outsideTube.balls.find(
+        (ball) => ball.idx === ballOutside.idx,
+      );
+      if (outsideBall) {
+        outsideBall.isOutside = false;
+      }
+    });
+  },
+  target: $tubesKv,
+});
+
+debug({
+  $ballOutside,
+  $tubesKv,
+});
+
+export const $$tubeApp = {
+  gameStarted,
+  $tubesKv,
+  $ballOutside,
+  $tubeIdxList,
+  tubeSelected,
+};
