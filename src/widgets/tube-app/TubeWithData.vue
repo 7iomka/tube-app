@@ -1,5 +1,5 @@
 <template>
-    <Tube :maxCount="tube.balls.length" @click="handleSelect(tube.idx)">
+    <Tube :maxCount="settings.ballsInTubeCount" @click="handleSelect(tube.idx)">
         <template v-for="ball in tube.balls" :key="ball.idx">
             <Ball v-if="!ball.isOutside" :color="ball.color"></Ball>
         </template>
@@ -30,4 +30,5 @@ const tube = useStoreMap({
 
 const ballOutside = useUnit($$tubeApp.$ballOutside);
 const handleSelect = useUnit($$tubeApp.tubeSelected);
+const settings = useUnit($$tubeApp.$settings);
 </script>

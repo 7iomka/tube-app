@@ -8,7 +8,9 @@
       <Link href="/about">About</Link>
       <Link href="/star-wars">Data Fetching</Link>
     </div>
-    <div id="page-content"><slot /></div>
+    <div id="page-content">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -22,6 +24,7 @@ import './css/index.css'
   padding: 2px 10px;
   margin-left: -10px;
 }
+
 #sidebar a.is-active {
   background-color: #eee;
 }
@@ -33,11 +36,15 @@ import './css/index.css'
   max-width: 900px;
   margin: auto;
 }
+
 #page-content {
   padding: 20px;
   padding-bottom: 50px;
   min-height: 100vh;
+  flex-grow: 1;
+  min-width: 0;
 }
+
 #sidebar {
   padding: 20px;
   flex-shrink: 0;
@@ -46,6 +53,7 @@ import './css/index.css'
   line-height: 1.8em;
   border-right: 2px solid #eee;
 }
+
 #logo-container {
   margin-top: 20px;
   margin-bottom: 10px;
