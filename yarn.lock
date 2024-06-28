@@ -897,6 +897,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@withease/web-api@npm:^1.2.3":
+  version: 1.2.3
+  resolution: "@withease/web-api@npm:1.2.3"
+  peerDependencies:
+    effector: ^22.5.0 || ^23.0.0
+  checksum: 10c0/8cb1fd341eb6496d2ef41e515582579be1e75e1cae06f228ded0bd70bd95c8ef05fc39539b42d913746e6b22284becf0acb89d3d0ab5e0f269ce7b84e1949c75
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^2.0.0":
   version: 2.0.0
   resolution: "abbrev@npm:2.0.0"
@@ -3009,6 +3018,7 @@ __metadata:
     "@vitejs/plugin-vue": "npm:^5.0.0"
     "@vue/compiler-sfc": "npm:^3.3.10"
     "@vue/server-renderer": "npm:^3.3.10"
+    "@withease/web-api": "npm:^1.2.3"
     autoprefixer: "npm:^10.4.19"
     class-variance-authority: "npm:^0.7.0"
     clsx: "npm:^2.1.1"

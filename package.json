@@ -11,6 +11,7 @@
     "@vitejs/plugin-vue": "^5.0.0",
     "@vue/compiler-sfc": "^3.3.10",
     "@vue/server-renderer": "^3.3.10",
+    "@withease/web-api": "^1.2.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "compression": "^1.7.4",

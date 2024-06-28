@@ -1,16 +1,33 @@
 import { combine, createEvent, createStore, sample } from 'effector';
 import { debug } from 'patronum/debug';
+import { interval } from 'patronum/interval';
 import { produce } from 'immer';
+import { trackPageVisibility } from '@withease/web-api';
 import {
   createShuffledGroupedValues,
+  formatTimeHMS,
   getRandomUniqueValues,
 } from './tube-app.lib';
 import { availableColors, defaultSettings } from './tube-app.constants';
 import type { Ball, Settings, Tube, TubesKv } from './tube-app.types';
 
+const gameInitialized = createEvent();
+
+const { visible: gameVisible, hidden: gameHidden } = trackPageVisibility({
+  setup: gameInitialized,
+});
+
 const gameStarted = createEvent();
 const settingsOpened = createEvent();
 const gameEnded = createEvent<boolean>();
+
+const stepCounterIncreased = createEvent();
+const stepCounterResetted = createEvent();
+const $stepCounter = createStore(0)
+  .on(stepCounterIncreased, (v) => v + 1)
+  .reset(stepCounterResetted);
+
+sample({ clock: gameStarted, target: stepCounterResetted });
 
 const $status = createStore<'settings' | 'playing' | 'success' | 'fail'>(
   'settings',
@@ -26,6 +43,46 @@ const $settingsTranslations = createStore<Record<keyof Settings, string>>({
   tubes: 'Tubes count',
   ballsInTube: 'Balls in tube',
   emptyTubes: 'Empty tubes count',
+});
+
+// Timer
+const timeCounterStarted = createEvent();
+const timeCounterStopped = createEvent();
+const timeCounterResetted = createEvent();
+
+const { tick: timeCounterTick, isRunning: $isTimeCounterRunning } = interval({
+  timeout: 1000,
+  start: timeCounterStarted,
+  stop: timeCounterStopped,
+});
+
+const $timeCounter = createStore(0)
+  .on(timeCounterTick, (v) => v + 1)
+  .on(timeCounterResetted, () => 0);
+
+const $timeCounterFormatted = $timeCounter.map((v) => formatTimeHMS(v, 2));
+
+sample({
+  clock: gameStarted,
+  target: [timeCounterResetted, timeCounterStarted],
+});
+
+sample({
+  clock: [gameEnded, settingsOpened],
+  target: timeCounterStopped,
+});
+
+sample({
+  clock: gameHidden,
+  filter: $isTimeCounterRunning,
+  target: timeCounterStopped,
+});
+
+sample({
+  clock: gameVisible,
+  source: $isTimeCounterRunning,
+  filter: (is) => !is,
+  target: timeCounterStarted,
 });
 
 const $tubesKv = createStore<TubesKv>({});
@@ -53,6 +110,11 @@ sample({
 sample({
   clock: tubesInitialized,
   target: tubesUpdated,
+});
+
+sample({
+  clock: tubeSelected,
+  target: stepCounterIncreased,
 });
 
 sample({
@@ -93,6 +155,14 @@ sample({
   },
   target: tubesInitialized,
 });
+
+const checkCompleted = (tube: Tube, settings: Settings) => {
+  if (tube.balls.length === 0) return true;
+  if (tube.balls.length < settings.ballsInTube.value) return false;
+
+  const firstBallColor = tube.balls[0].color;
+  return tube.balls.every((ball) => ball.color === firstBallColor);
+};
 
 const returnBallToTube = ({
   tube,
@@ -219,12 +289,16 @@ sample({
       if (tube.balls.length === 0)
         return handleEmptyTube({ draft, tubeIdx, ballOutside });
 
-      return handleNonEmptyTube({
+      handleNonEmptyTube({
         draft,
         tubeIdx,
         ballOutside,
         maxBallsInTube,
       });
+
+      if (checkCompleted(tube, settings)) {
+        tube.completed = true;
+      }
     });
   },
   target: tubesUpdated,
@@ -260,6 +334,7 @@ debug({
 });
 
 export const $$tubeApp = {
+  gameInitialized,
   gameStarted,
   settingsOpened,
   $tubesKv,
@@ -269,4 +344,6 @@ export const $$tubeApp = {
   $status,
   $settings,
   $settingsTranslations,
+  $timeCounterFormatted,
+  $stepCounter,
 };

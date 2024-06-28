@@ -21,7 +21,7 @@ async function onRenderHtml(pageContext) {
   const desc = pageContext.data?.description || pageContext.config.description || 'Demo of using Vike'
 
   const documentHtml = escapeInject`<!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" class="dark">
       <head>
         <meta charset="UTF-8" />
         <link rel="icon" href="${logoUrl}" />

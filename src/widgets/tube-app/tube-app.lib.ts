@@ -46,3 +46,29 @@ export const createShuffledGroupedValues = <T>({
   );
   return shuffleArray(repeatedValues);
 };
+
+const padNumber = (num: number, length = 2, padChar = '0'): string => {
+  return num.toString().padStart(length, padChar);
+};
+
+/**
+ * Format time as dd 00:00:00
+ * @param seconds Number of seconds
+ * @param len Length format: 4 for day:hour:minute:second, 3 for hour:minute:second, 2 for minute:second, 1 for second
+ * @returns Formatted time string
+ */
+export const formatTimeHMS = (seconds: number, len = 3): string => {
+  const day = Math.floor(seconds / 86400);
+  const hour = Math.floor((seconds % 86400) / 3600);
+  const minute = Math.floor((seconds % 3600) / 60);
+  const second = seconds % 60;
+
+  let result = '';
+
+  if (day > 0 || len === 4) result += `${day}d `;
+  if (hour > 0 || len >= 3) result += `${padNumber(hour)}:`;
+  if (minute > 0 || len >= 2) result += `${padNumber(minute)}:`;
+  result += padNumber(second);
+
+  return result;
+};

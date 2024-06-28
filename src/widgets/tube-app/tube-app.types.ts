@@ -20,6 +20,7 @@ export interface Ball {
 export interface Tube {
   idx: number;
   balls: Ball[];
+  completed?: boolean;
 }
 
 export type TubesKv = Record<number, Tube>;
