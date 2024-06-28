@@ -1,5 +1,5 @@
 <template>
-    <Tube :maxCount="settings.ballsInTubeCount" @click="handleSelect(tube.idx)">
+    <Tube :maxCount="settings.ballsInTube.value" @click="handleSelect(tube.idx)">
         <template v-for="ball in tube.balls" :key="ball.idx">
             <Ball v-if="!ball.isOutside" :color="ball.color"></Ball>
         </template>

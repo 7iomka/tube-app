@@ -5,52 +5,27 @@ import {
   createShuffledGroupedValues,
   getRandomUniqueValues,
 } from './tube-app.lib';
-import { availableColors } from './tube-app.constants';
-
-export interface Settings {
-  tubesCount: number;
-  ballsInTubeCount: number;
-  emptyTubesCount: number;
-  // availableColors: string[];
-}
-
-export interface Ball {
-  idx: number;
-  tubeIdx: number;
-  color: string;
-  isOutside?: boolean;
-}
-export interface Tube {
-  idx: number;
-  balls: Ball[];
-}
-
-type TubesKv = Record<number, Tube>;
+import { availableColors, defaultSettings } from './tube-app.constants';
+import type { Ball, Settings, Tube, TubesKv } from './tube-app.types';
 
 const gameStarted = createEvent();
-const gameRestarted = createEvent();
 const settingsOpened = createEvent();
 const gameEnded = createEvent<boolean>();
-const settingsChanged = createEvent<Partial<Settings>>();
 
 const $status = createStore<'settings' | 'playing' | 'success' | 'fail'>(
   'settings',
 )
   .on(gameStarted, () => 'playing')
-  .on(gameRestarted, () => 'playing')
   .on(settingsOpened, () => 'settings')
   .on(gameEnded, (v) => (v ? 'success' : 'fail'));
 
-const $settings = createStore<Settings>({
-  tubesCount: 3,
-  ballsInTubeCount: 6,
-  emptyTubesCount: 2,
-});
+// Note: We can use it in v-model with 2-way binding (no event)
+const $settings = createStore<Settings>(defaultSettings);
 
 const $settingsTranslations = createStore<Record<keyof Settings, string>>({
-  tubesCount: 'Tubes count',
-  ballsInTubeCount: 'Balls in tube',
-  emptyTubesCount: 'Empty tubes count',
+  tubes: 'Tubes count',
+  ballsInTube: 'Balls in tube',
+  emptyTubes: 'Empty tubes count',
 });
 
 const $tubesKv = createStore<TubesKv>({});
@@ -80,41 +55,25 @@ sample({
   target: tubesUpdated,
 });
 
-// Optional
-sample({
-  clock: gameRestarted,
-  target: gameStarted,
-});
-
-sample({
-  clock: settingsChanged,
-  source: $settings,
-  fn: (currSettings, newSettings) => ({
-    ...currSettings,
-    ...newSettings,
-  }),
-  target: $settings,
-});
-
 sample({
   clock: gameStarted,
   source: $settings,
-  fn: ({ tubesCount, ballsInTubeCount, emptyTubesCount }) => {
-    const colorsToUse = getRandomUniqueValues(availableColors, tubesCount);
+  fn: ({ tubes, ballsInTube, emptyTubes }) => {
+    const colorsToUse = getRandomUniqueValues(availableColors, tubes.value);
     const shuffledColors = createShuffledGroupedValues({
       values: colorsToUse,
-      itemsPerGroup: ballsInTubeCount,
-      groupCount: tubesCount,
+      itemsPerGroup: ballsInTube.value,
+      groupCount: tubes.value,
     });
 
-    const tubes: TubesKv = {};
+    const tubesKv: TubesKv = {};
 
     // Add non-empty tubes
-    for (let i = 0; i < tubesCount; i++) {
-      tubes[i] = {
+    for (let i = 0; i < tubes.value; i++) {
+      tubesKv[i] = {
         idx: i,
         balls: shuffledColors
-          .slice(i * ballsInTubeCount, (i + 1) * ballsInTubeCount)
+          .slice(i * ballsInTube.value, (i + 1) * ballsInTube.value)
           .map((color, j) => ({
             idx: j,
             tubeIdx: i,
@@ -124,11 +83,13 @@ sample({
     }
 
     // Add empty tubes
-    for (let i = tubesCount; i < tubesCount + emptyTubesCount; i++) {
-      tubes[i] = { idx: i, balls: [] };
+    const finalCount = tubes.value + emptyTubes.value;
+
+    for (let i = tubes.value; i < finalCount; i++) {
+      tubesKv[i] = { idx: i, balls: [] };
     }
 
-    return tubes;
+    return tubesKv;
   },
   target: tubesInitialized,
 });
@@ -253,7 +214,7 @@ sample({
   fn: ({ tubesKv, ballOutside, settings }, tubeIdx) => {
     return produce(tubesKv, (draft) => {
       const tube = draft[tubeIdx];
-      const maxBallsInTube = settings.ballsInTubeCount;
+      const maxBallsInTube = settings.ballsInTube.value;
 
       if (tube.balls.length === 0)
         return handleEmptyTube({ draft, tubeIdx, ballOutside });
@@ -279,7 +240,7 @@ sample({
   filter({ tubesKv, settings }) {
     const allTubesCompleted = Object.values(tubesKv).every((tube) => {
       if (tube.balls.length === 0) return true;
-      if (tube.balls.length < settings.ballsInTubeCount) return false;
+      if (tube.balls.length < settings.ballsInTube.value) return false;
 
       const firstBallColor = tube.balls[0].color;
       return tube.balls.every((ball) => ball.color === firstBallColor);
@@ -295,11 +256,11 @@ sample({
 debug({
   $ballOutside,
   $tubesKv,
+  $settings,
 });
 
 export const $$tubeApp = {
   gameStarted,
-  gameRestarted,
   settingsOpened,
   $tubesKv,
   $ballOutside,
@@ -307,6 +268,5 @@ export const $$tubeApp = {
   tubeSelected,
   $status,
   $settings,
-  settingsChanged,
   $settingsTranslations,
 };
