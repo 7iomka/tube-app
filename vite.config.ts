@@ -10,7 +10,12 @@ const config: UserConfig = {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  plugins: [vue(), vike()],
+  plugins: [
+    vue(),
+    vike({
+      prerender: true,
+    }),
+  ],
 };
 
 export default config;
