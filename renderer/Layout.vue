@@ -16,7 +16,7 @@
 
 <script setup>
 import Link from './Link.vue'
-import './css/index.css'
+import '../src/app/styles/common.css'
 </script>
 
 <style>
