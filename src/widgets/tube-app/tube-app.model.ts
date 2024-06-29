@@ -311,26 +311,10 @@ sample({
     tubesKv: $tubesKv,
     settings: $settings,
   },
-  filter({ tubesKv, settings }) {
-    const allTubesCompleted = Object.values(tubesKv).every((tube) => {
-      if (tube.balls.length === 0) return true;
-      if (tube.balls.length < settings.ballsInTube.value) return false;
-
-      const firstBallColor = tube.balls[0].color;
-      return tube.balls.every((ball) => ball.color === firstBallColor);
-    });
-    return allTubesCompleted;
-  },
+  filter: ({ tubesKv, settings }) =>
+    Object.values(tubesKv).every((tube) => checkCompleted(tube, settings)),
   fn: () => true,
   target: gameEnded,
-});
-
-// TODO: Handle fail game ending
-
-debug({
-  $ballOutside,
-  $tubesKv,
-  $settings,
 });
 
 export const $$tubeApp = {
