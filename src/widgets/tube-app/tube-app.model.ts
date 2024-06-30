@@ -187,14 +187,14 @@ const canMoveBall = (
 };
 
 const isGameStuck = (tubesKv: TubesKv, settings: Settings) => {
-  const tubeIndices = Object.keys(tubesKv).map(Number);
+  const tubeIdxList = Object.keys(tubesKv).map(Number);
   const possibleMoves: { from: number; to: number }[] = [];
 
-  for (let i = 0; i < tubeIndices.length; i++) {
-    for (let j = 0; j < tubeIndices.length; j++) {
+  for (let i = 0; i < tubeIdxList.length; i++) {
+    for (let j = 0; j < tubeIdxList.length; j++) {
       if (i !== j) {
-        const sourceTube = tubesKv[tubeIndices[i]];
-        const targetTube = tubesKv[tubeIndices[j]];
+        const sourceTube = tubesKv[tubeIdxList[i]];
+        const targetTube = tubesKv[tubeIdxList[j]];
 
         if (canMoveBall(sourceTube, targetTube, settings)) {
           const movingBall = sourceTube.balls[0];
@@ -206,7 +206,7 @@ const isGameStuck = (tubesKv: TubesKv, settings: Settings) => {
             movingBall.color === targetBalls[targetBalls.length - 1].color;
 
           if (isProgressiveMove) {
-            possibleMoves.push({ from: tubeIndices[i], to: tubeIndices[j] });
+            possibleMoves.push({ from: tubeIdxList[i], to: tubeIdxList[j] });
           }
         }
       }
