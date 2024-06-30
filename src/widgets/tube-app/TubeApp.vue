@@ -5,7 +5,7 @@
         <h2 class="text-xl text-center">Tube App</h2>
         <div
           id="tubes"
-          v-if="status === 'playing'"
+          v-if="status !== 'settings'"
           class="flex justify-center flex-wrap gap-4"
         >
           <TubeWithData v-for="idx in tubeIds" :key="idx" :idx="idx">
@@ -24,7 +24,7 @@
               { 'text-rose-700': status === 'fail' },
             ]"
           >
-            {{ status === 'success' ? 'Success!' : 'Fail!' }}
+            {{ status === 'success' ? 'You win!' : `Game over: you're stuck!` }}
           </h4>
         </div>
         <div

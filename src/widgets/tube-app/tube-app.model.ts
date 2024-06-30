@@ -1,5 +1,4 @@
 import { combine, createEvent, createStore, sample } from 'effector';
-import { debug } from 'patronum/debug';
 import { interval } from 'patronum/interval';
 import { produce } from 'immer';
 import { trackPageVisibility } from '@withease/web-api';
@@ -34,7 +33,7 @@ const $status = createStore<'settings' | 'playing' | 'success' | 'fail'>(
 )
   .on(gameStarted, () => 'playing')
   .on(settingsOpened, () => 'settings')
-  .on(gameEnded, (v) => (v ? 'success' : 'fail'));
+  .on(gameEnded, (_, v) => (v ? 'success' : 'fail'));
 
 // Note: We can use it in v-model with 2-way binding (no event)
 const $settings = createStore<Settings>(defaultSettings);
@@ -114,6 +113,8 @@ sample({
 
 sample({
   clock: tubeSelected,
+  source: $status,
+  filter: (v) => v === 'playing',
   target: stepCounterIncreased,
 });
 
@@ -132,15 +133,18 @@ sample({
 
     // Add non-empty tubes
     for (let i = 0; i < tubes.value; i++) {
+      const balls = shuffledColors
+        .slice(i * ballsInTube.value, (i + 1) * ballsInTube.value)
+        .map((color, j) => ({
+          idx: j,
+          tubeIdx: i,
+          color,
+        }));
+
       tubesKv[i] = {
         idx: i,
-        balls: shuffledColors
-          .slice(i * ballsInTube.value, (i + 1) * ballsInTube.value)
-          .map((color, j) => ({
-            idx: j,
-            tubeIdx: i,
-            color,
-          })),
+        balls,
+        completed: balls.every((ball) => ball.color === balls[0].color),
       };
     }
 
@@ -162,6 +166,71 @@ const checkCompleted = (tube: Tube, settings: Settings) => {
 
   const firstBallColor = tube.balls[0].color;
   return tube.balls.every((ball) => ball.color === firstBallColor);
+};
+
+// Checks if a ball can be moved from one tube to another
+const canMoveBall = (
+  sourceTube: Tube,
+  targetTube: Tube,
+  settings: Settings,
+) => {
+  if (
+    sourceTube.balls.length === 0 ||
+    targetTube.balls.length === settings.ballsInTube.value
+  )
+    return false;
+
+  const movingBall = sourceTube.balls[0];
+  const targetBall = targetTube.balls[0];
+
+  return !targetBall || targetBall.color === movingBall.color;
+};
+
+const isGameStuck = (tubesKv: TubesKv, settings: Settings) => {
+  const tubeIndices = Object.keys(tubesKv).map(Number);
+  const possibleMoves: { from: number; to: number }[] = [];
+
+  for (let i = 0; i < tubeIndices.length; i++) {
+    for (let j = 0; j < tubeIndices.length; j++) {
+      if (i !== j) {
+        const sourceTube = tubesKv[tubeIndices[i]];
+        const targetTube = tubesKv[tubeIndices[j]];
+
+        if (canMoveBall(sourceTube, targetTube, settings)) {
+          const movingBall = sourceTube.balls[0];
+          const targetBalls = targetTube.balls;
+
+          // Check if moving the ball creates progress
+          const isProgressiveMove =
+            targetBalls.length === 0 ||
+            movingBall.color === targetBalls[targetBalls.length - 1].color;
+
+          if (isProgressiveMove) {
+            possibleMoves.push({ from: tubeIndices[i], to: tubeIndices[j] });
+          }
+        }
+      }
+    }
+  }
+
+  // If there are no possible moves, game is stuck
+  if (possibleMoves.length === 0) {
+    return true;
+  }
+
+  // Check for cycles
+  for (let i = 0; i < possibleMoves.length; i++) {
+    const { from, to } = possibleMoves[i];
+    const reverseMove = possibleMoves.find(
+      (move) => move.from === to && move.to === from,
+    );
+    if (reverseMove && possibleMoves.length === 2) {
+      // Only two possible moves and they are reverse of each other, game is stuck
+      return true;
+    }
+  }
+
+  return false;
 };
 
 const returnBallToTube = ({
@@ -276,11 +345,14 @@ const handleEmptyTube = ({
 // Update kv when tube is selected
 sample({
   clock: tubeSelected,
+
   source: {
     tubesKv: $tubesKv,
     ballOutside: $ballOutside,
     settings: $settings,
+    status: $status,
   },
+  filter: ({ status }) => status === 'playing',
   fn: ({ tubesKv, ballOutside, settings }, tubeIdx) => {
     return produce(tubesKv, (draft) => {
       const tube = draft[tubeIdx];
@@ -314,6 +386,18 @@ sample({
   filter: ({ tubesKv, settings }) =>
     Object.values(tubesKv).every((tube) => checkCompleted(tube, settings)),
   fn: () => true,
+  target: gameEnded,
+});
+
+// Handle stuck game ending
+sample({
+  clock: tubesUpdated,
+  source: {
+    tubesKv: $tubesKv,
+    settings: $settings,
+  },
+  filter: ({ tubesKv, settings }) => isGameStuck(tubesKv, settings),
+  fn: () => false,
   target: gameEnded,
 });
 

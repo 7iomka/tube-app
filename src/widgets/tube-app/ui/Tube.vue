@@ -1,5 +1,5 @@
 <template>
-  <div class="tube-wrapper" :data-completed="completed && ''">
+  <div class="tube-wrapper" :data-completed="booleanDataAttr(completed)">
     <div class="header">
       <slot name="header" />
     </div>
@@ -10,6 +10,8 @@
 </template>
 
 <script setup lang="ts">
+import { booleanDataAttr } from '@/shared/lib/attrs';
+
 export interface TubeProps {
   maxCount: number;
   completed?: boolean;
