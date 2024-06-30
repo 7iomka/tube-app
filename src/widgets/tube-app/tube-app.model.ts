@@ -389,7 +389,8 @@ sample({
   target: gameEnded,
 });
 
-// Handle stuck game ending
+// Handle stuck game ending (FIXME)
+/** 
 sample({
   clock: tubesUpdated,
   source: {
@@ -400,6 +401,8 @@ sample({
   fn: () => false,
   target: gameEnded,
 });
+
+**/
 
 export const $$tubeApp = {
   gameInitialized,
